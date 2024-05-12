@@ -1,0 +1,12 @@
+socks5_listen: 0.0.0.0:9999
+http_proxy_listen: 0.0.0.0:19999
+exit_constraint:
+  country: $EXIT
+broker:
+  fronted:
+    front: https://vuejs.org/
+    host: svitania-naidallszei-2.netlify.app
+credentials:
+  legacy_username_password:
+    username: $USERNAME
+    password: $PASSWORD
