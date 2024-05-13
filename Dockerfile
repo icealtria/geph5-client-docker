@@ -1,10 +1,13 @@
 FROM rust:latest as builder
 
-ENV CROSS_CONTAINER_IN_CONTAINER=true
-RUN cargo install cross
+RUN \ 
+    apt update && apt install -y \
+    gcc clang g++ zlib1g-dev libmpc-dev curl \
+    libmpfr-dev libgmp-dev  build-essential
 
 RUN git clone https://github.com/geph-official/geph5 --depth 1
-RUN cd geph5 && cross build --release --locked --target $(uname --machine)-unknown-linux-musl -p geph5-client
+WORKDIR /geph5
+RUN cargo build --release --locked --target $(uname --machine)-unknown-linux-musl -p geph5-client
 
 
 FROM alpine:latest
