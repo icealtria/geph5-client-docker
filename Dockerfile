@@ -1,9 +1,9 @@
 FROM rust:latest as builder
 
-RUN \ 
-    apt update && apt install -y \
-    gcc clang g++ zlib1g-dev libmpc-dev curl \
-    libmpfr-dev libgmp-dev  build-essential
+ENV CC_aarch64_unknown_linux_musl="clang"
+ENV AR_aarch64_unknown_linux_musl="llvm-ar"
+ENV CFLAGS_aarch64_unknown_linux_musl="-nostdinc -nostdlib -isystem/usr/include/x86_64-linux-musl/"
+ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_RUSTFLAGS="-Clink-self-contained=yes -Clinker=rust-lld -Clink-args=-L/usr/lib/x86_64-linux-musl/"
 
 RUN rustup target add $(uname --machine)-unknown-linux-musl
 
