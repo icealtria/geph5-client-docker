@@ -5,6 +5,8 @@ RUN \
     gcc clang g++ zlib1g-dev libmpc-dev curl \
     libmpfr-dev libgmp-dev  build-essential
 
+RUN rustup target add $(uname --machine)-unknown-linux-musl
+
 RUN git clone https://github.com/geph-official/geph5 --depth 1
 WORKDIR /geph5
 RUN cargo build --release --locked --target $(uname --machine)-unknown-linux-musl -p geph5-client
