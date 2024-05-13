@@ -1,6 +1,10 @@
 FROM rust:latest as builder
 
-RUN apt-get update && apt-get install -y musl-tools
+ENV CC_aarch64_unknown_linux_musl=clang
+ENV AR_aarch64_unknown_linux_musl=llvm-ar
+ENV CARGO_TARGET_AARCH64_UNKNOWN_LINUX_MUSL_RUSTFLAGS="-Clink-self-contained=yes -Clinker=rust-lld"
+
+RUN apt-get update && apt-get install -y musl-tools clang llvm
 RUN rustup target add $(uname --machine)-unknown-linux-musl
 
 RUN git clone https://github.com/geph-official/geph5 --depth 1
@@ -27,4 +31,3 @@ EXPOSE 9999
 EXPOSE 19999
 
 ENTRYPOINT ["sh", "-c", "envsubst < /config.template > /config/config.yml && /geph5-client -c /config/config.yml"]
-
