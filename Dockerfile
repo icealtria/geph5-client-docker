@@ -1,5 +1,6 @@
 FROM rust:latest as builder
 
+RUN apt-get update
 RUN apt-get install clang llvm -y
 
 ENV CC_aarch64_unknown_linux_musl="clang"
