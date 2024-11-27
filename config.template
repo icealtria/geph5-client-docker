@@ -10,3 +10,4 @@ credentials:
   legacy_username_password:
     username: $USERNAME
     password: $PASSWORD
+passthrough_china: $PASSTHROUGH_CHINA

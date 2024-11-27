@@ -21,6 +21,7 @@ RUN mkdir -p /config
 ARG USERNAME
 ARG PASSWORD
 ARG EXIT
+ARG PASSTHROUGH_CHINA=false
 
 COPY config.template /config.template
 
