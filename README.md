@@ -7,7 +7,8 @@ docker run -d \
   -p 9999:9999 \
   -e USERNAME=username \
   -e PASSWORD=password \
-  -e EXIT=TW \
+  -e EXIT=FR \
+  -e PASSTHROUGH_CHINA=true \
   icealtria/geph5-client:latest
 ```
 Docker Compose
@@ -21,5 +22,6 @@ services:
     environment:
       USERNAME: username
       PASSWORD: password
-      EXIT: TW
+      EXIT: FR
+      PASSTHROUGH_CHINA: true
 ```
