@@ -28,9 +28,9 @@ jobs:
       - name: Build binary
         uses: houseabsolute/actions-rust-cross@v1
         with:
-          command: build -p geph5-client
+          command: build
           target: ${{ matrix.platform.target }}
-          args: "--locked --release"
+          args: "--locked --release -p geph5-client"
           strip: true
 
       - name: list
