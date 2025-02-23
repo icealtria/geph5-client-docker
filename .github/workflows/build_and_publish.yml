@@ -14,18 +14,15 @@ jobs:
     strategy:
       matrix:
         platform:
-          # - os-name: linux/arm64
+          # - os-name: linuxarm64
           #   runs-on: ubuntu-24.04
           #   target: aarch64-unknown-linux-musl
           #   docker-platform: linux/arm64
-          - os-name: Linux-x86_64
+          - os-name: amd64
             runs-on: ubuntu-24.04
             target: x86_64-unknown-linux-musl
             docker-platform: linux/amd64
 
-        toolchain:
-          - nightly
-          
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,16 +31,21 @@ jobs:
         run: git clone https://github.com/geph-official/geph5 --depth 1
 
       - name: Build binary
-        uses: houseabsolute/actions-rust-cross@v1
+        uses: houseabsolute/actions-rust-cross@v1     
+        env:
+          RUSTFLAGS: "-C opt-level=z -C lto -C panic=abort -C codegen-units=1"
         with:
           working-directory: geph5
           command: build
           target: ${{ matrix.platform.target }}
-          args: "--locked --release -p geph5-client -C opt-level=z -C lto -C panic=abort -C codegen-units=1 --target=${{ matrix.platform.target }}"
+          args: "--locked --release -p geph5-client"
           strip: true
 
       - name: List build directory
-        run: ls -lah geph5/target/
+        run: ls -lah geph5/target/ && ls -lah geph5/target/release/
+
+      - name: List binary directory
+        run: ls -lah geph5/target/${{ matrix.platform.target }}/release/
 
       - name: Build Docker Image
         run: docker build -t icealtria/geph5-client:latest .
