@@ -33,7 +33,7 @@ jobs:
       - name: Build binary
         uses: houseabsolute/actions-rust-cross@v1     
         env:
-          RUSTFLAGS: "-C opt-level=z -C lto -C panic=abort -C codegen-units=1"
+          RUSTFLAGS: "-C opt-level=z -C lto -C embed-bitcode -C panic=abort -C codegen-units=1"
         with:
           working-directory: geph5
           command: build
