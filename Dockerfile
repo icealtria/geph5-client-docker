@@ -1,20 +1,11 @@
-FROM rust:latest as builder
-
-RUN git clone https://github.com/geph-official/geph5 --depth 1
-RUN cd geph5 && cargo build --release --locked  -p geph5-client
-
-FROM debian:stable-slim
+FROM alpine:latest
 
 RUN \
-    apt-get update \
-    && apt-get -y install ca-certificates gettext-base \
-    && apt-get clean \
-    && rm -rf \
-    /tmp/* \
-    /var/lib/apt/lists/* \
-    /var/tmp/*
+    apk update \
+    && apk add --no-cache ca-certificates gettext \
+    && rm -rf /var/cache/apk/*
 
-COPY --from=builder /geph5/target/release/geph5-client /geph5-client
+COPY /geph5/target/*/release/geph5-client /geph5-client
 
 RUN mkdir -p /config
 
