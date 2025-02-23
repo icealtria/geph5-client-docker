@@ -24,7 +24,7 @@ jobs:
             docker-platform: linux/amd64
 
         toolchain:
-          - stable
+          - nightly
           
     steps:
       - name: Checkout
@@ -39,7 +39,7 @@ jobs:
           working-directory: geph5
           command: build
           target: ${{ matrix.platform.target }}
-          args: "--locked --release -p geph5-client -Z panic_abort --target=${{ matrix.platform.target }} --features lto --codegen-units=1"
+          args: "--locked --release -p geph5-client -C opt-level=z -C lto -C panic=abort -C codegen-units=1 --target=${{ matrix.platform.target }}"
           strip: true
 
       - name: List build directory
