@@ -1,6 +1,5 @@
 name: Build and Publish Docker Image
 
-
 on:
   push:
   workflow_dispatch:
@@ -14,15 +13,14 @@ jobs:
     strategy:
       matrix:
         platform:
-          # - os-name: linuxarm64
-          #   runs-on: ubuntu-24.04
-          #   target: aarch64-unknown-linux-musl
-          #   docker-platform: linux/arm64
+          - os-name: arm64
+            runs-on: ubuntu-24.04
+            target: aarch64-unknown-linux-musl
+            docker-platform: linux/arm64
           - os-name: amd64
             runs-on: ubuntu-24.04
             target: x86_64-unknown-linux-musl
             docker-platform: linux/amd64
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -30,8 +28,8 @@ jobs:
       - name: git clone geph5
         run: git clone https://github.com/geph-official/geph5 --depth 1
 
-      - name: Build binary
-        uses: houseabsolute/actions-rust-cross@v1     
+      - name: Build binary using cross
+        uses: houseabsolute/actions-rust-cross@v1
         env:
           RUSTFLAGS: "-C opt-level=z -C lto -C embed-bitcode -C panic=abort -C codegen-units=1"
         with:
@@ -41,25 +39,31 @@ jobs:
           args: "--locked --release -p geph5-client"
           strip: true
 
-      - name: List build directory
-        run: ls -lah geph5/target/ && ls -lah geph5/target/release/
-
-      - name: List binary directory
-        run: ls -lah geph5/target/${{ matrix.platform.target }}/release/
-
       - name: Build Docker Image
-        run: docker build -t icealtria/geph5-client:latest .
-      
+        run: docker build -t icealtria/geph5-client:latest-${{ matrix.platform.os-name }} .
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-        
-      - name: Build and push
-        uses: docker/build-push-action@v5
+      
+      - name: Push Docker Image
+        run: docker push icealtria/geph5-client:latest-${{ matrix.platform.os-name }}
+
+  merge-docker-manifest:
+    needs: docker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
         with:
-          context: .
-          platforms: ${{ matrix.platform.docker-platform }}
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Create and push multi-arch manifest
+        uses: Noelware/docker-manifest-action@master
+        with:
+          inputs: "icealtria/geph5-client:latest"
+          images: "icealtria/geph5-client:latest-amd64,icealtria/geph5-client:latest-arm64"
           push: true
-          tags: icealtria/geph5-client:latest
