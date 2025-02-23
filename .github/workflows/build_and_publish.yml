@@ -17,10 +17,12 @@ jobs:
             runs-on: ubuntu-24.04
             target: aarch64-unknown-linux-musl
             docker-platform: linux/arm64
+            docker-tag: arm64v8
           - os-name: amd64
             runs-on: ubuntu-24.04
             target: x86_64-unknown-linux-musl
             docker-platform: linux/amd64
+            docker-tag: latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,31 +41,20 @@ jobs:
           args: "--locked --release -p geph5-client"
           strip: true
 
-      - name: Build Docker Image
-        run: docker build -t icealtria/geph5-client:latest-${{ matrix.platform.os-name }} .
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-      - name: Push Docker Image
-        run: docker push icealtria/geph5-client:latest-${{ matrix.platform.os-name }}
 
-  merge-docker-manifest:
-    needs: docker
-    runs-on: ubuntu-latest
-    steps:
-      - name: Login to Docker Hub
-        uses: docker/login-action@v3
+      - name: Build and push Docker Image
+        uses: docker/build-push-action@v6
         with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      
-      - name: Create and push multi-arch manifest
-        uses: Noelware/docker-manifest-action@master
-        with:
-          inputs: "icealtria/geph5-client:latest"
-          images: "icealtria/geph5-client:latest-amd64,icealtria/geph5-client:latest-arm64"
+          context: .
+          file: Dockerfile
+          platforms: ${{ matrix.platform.docker-platform }}
           push: true
+          tags: icealtria/geph5-client:${{ matrix.platform.docker-tag }}
