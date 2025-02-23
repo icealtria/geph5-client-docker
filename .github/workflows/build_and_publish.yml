@@ -14,9 +14,15 @@ jobs:
     strategy:
       matrix:
         platform:
-          - os-name: Linux-aarch64
+          # - os-name: linux/arm64
+          #   runs-on: ubuntu-24.04
+          #   target: aarch64-unknown-linux-musl
+          #   docker-platform: linux/arm64
+          - os-name: Linux-x86_64
             runs-on: ubuntu-24.04
-            target: aarch64-unknown-linux-musl
+            target: x86_64-unknown-linux-musl
+            docker-platform: linux/amd64
+
         toolchain:
           - stable
           
@@ -33,7 +39,7 @@ jobs:
           working-directory: geph5
           command: build
           target: ${{ matrix.platform.target }}
-          args: "--locked --release -p geph5-client"
+          args: "--locked --release -p geph5-client -Z panic_abort --target=${{ matrix.platform.target }} --features lto --codegen-units=1"
           strip: true
 
       - name: List build directory
@@ -52,5 +58,6 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: .
+          platforms: ${{ matrix.platform.docker-platform }}
           push: true
           tags: icealtria/geph5-client:latest
