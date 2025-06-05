@@ -25,9 +25,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Read version
+        id: version
+        run: echo "VERSION=$(cat version | tr -d '\n')" >> $GITHUB_ENV
+
       - name: Download geph5-client source from crates.io
         run: |
-          curl -sSL -o geph5-client.tar.gz https://crates.io/api/v1/crates/geph5-client/${{ github.ref_name }}/download
+          curl -sSL -o geph5-client.tar.gz https://crates.io/api/v1/crates/geph5-client/${VERSION}/download
           tar -xzf geph5-client.tar.gz
           mv geph5-client-* geph5-client
 
@@ -37,7 +41,7 @@ jobs:
           working-directory: geph5-client
           command: build
           target: ${{ matrix.platform.target }}
-          args: "--locked --release -p geph5-client"
+          args: "--locked --release --bin geph5-client"
           strip: true
         env:
           RUSTFLAGS: "-C opt-level=z -C lto -C embed-bitcode -C panic=abort -C codegen-units=1"
