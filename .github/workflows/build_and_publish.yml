@@ -3,8 +3,6 @@ name: Build and Publish Docker Image
 on:
   push:
   workflow_dispatch:
-  schedule:
-    - cron: '0 0 * * 1'
 
 jobs:
   docker:
@@ -27,19 +25,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: git clone geph5
-        run: git clone https://github.com/geph-official/geph5 --depth 1
+      - name: Download geph5-client source from crates.io
+        run: |
+          curl -sSL -o geph5-client.tar.gz https://crates.io/api/v1/crates/geph5-client/${{ github.ref_name }}/download
+          tar -xzf geph5-client.tar.gz
+          mv geph5-client-* geph5-client
 
       - name: Build binary using cross
         uses: houseabsolute/actions-rust-cross@v1
-        env:
-          RUSTFLAGS: "-C opt-level=z -C lto -C embed-bitcode -C panic=abort -C codegen-units=1"
         with:
-          working-directory: geph5
+          working-directory: geph5-client
           command: build
           target: ${{ matrix.platform.target }}
           args: "--locked --release -p geph5-client"
           strip: true
+        env:
+          RUSTFLAGS: "-C opt-level=z -C lto -C embed-bitcode -C panic=abort -C codegen-units=1"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

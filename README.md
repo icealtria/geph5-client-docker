@@ -5,8 +5,7 @@ CLI
 docker run -d \
   -p 19999:19999 \
   -p 9999:9999 \
-  -e USERNAME=username \
-  -e PASSWORD=password \
+  -e SECRET=12345678 \
   -e EXIT=FR \
   -e PASSTHROUGH_CHINA=true \
   icealtria/geph5-client:latest
@@ -20,8 +19,7 @@ services:
       - "19999:19999"
       - "9999:9999"
     environment:
-      USERNAME: username
-      PASSWORD: password
+      SECRET: "12345678"
       EXIT: FR
       PASSTHROUGH_CHINA: true
 ```
