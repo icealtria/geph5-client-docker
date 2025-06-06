@@ -44,7 +44,7 @@ jobs:
           args: "--locked --release --bin geph5-client"
           strip: true
         env:
-          RUSTFLAGS: "-C opt-level=z -C lto -C embed-bitcode -C panic=abort -C codegen-units=1"
+          RUSTFLAGS: "-C opt-level=z -C embed-bitcode -C panic=abort -C codegen-units=1"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
