@@ -5,7 +5,7 @@ RUN \
     && apk add --no-cache ca-certificates gettext \
     && rm -rf /var/cache/apk/*
 
-COPY /geph5/target/*/release/geph5-client /geph5-client
+COPY geph5-client /geph5-client
 
 RUN mkdir -p /config
 
