@@ -23,7 +23,7 @@ jobs:
         run: pip install requests
       - name: Check and tag if new version
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
           GITHUB_REPO_URL: github.com/icealtria/geph5-client-docker.git
         run: |
           git config user.name "github-actions[bot]"
