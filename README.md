@@ -3,11 +3,9 @@
 CLI
 ```sh
 docker run -d \
-  -p 19999:19999 \
-  -p 9999:9999 \
-  -e SECRET=12345678 \
-  -e EXIT=FR \
-  -e PASSTHROUGH_CHINA=true \
+  -p 9909:9909 \
+  -p 9910:9910 \
+  -v $(pwd)/config.yml:/config.yml \
   icealtria/geph5-client:latest
 ```
 Docker Compose
@@ -16,10 +14,8 @@ services:
   geph5:
     image: icealtria/geph5-client:latest
     ports:
-      - "19999:19999"
-      - "9999:9999"
-    environment:
-      SECRET: "12345678"
-      EXIT: FR
-      PASSTHROUGH_CHINA: true
+      - "9909:9909"
+      - "9910:9910"
+    volumes:
+      - ./config.yml:/config.yml
 ```

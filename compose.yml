@@ -2,10 +2,7 @@ services:
   geph5:
     image: icealtria/geph5-client:latest
     ports:
-      - "19999:19999"
-      - "9999:9999"
-    environment:
-      USERNAME: username
-      PASSWORD: password
-      EXIT: FR
-      PASSTHROUGH_CHINA: true
+      - 9909:9909
+      - 9910:9910
+    volumes:
+      - ./config.yml:/config.yml

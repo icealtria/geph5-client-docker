@@ -31,7 +31,7 @@ jobs:
 
       - name: Download geph5-client source from crates.io
         run: |
-          curl -sSL -o geph5-client.tar.gz https://crates.io/api/v1/crates/geph5-client/${VERSION}/download
+          curl -sSL --retry 3 --retry-delay 2 -o geph5-client.tar.gz https://crates.io/api/v1/crates/geph5-client/${VERSION}/download
           tar -xzf geph5-client.tar.gz
           export SRC_DIR=$(find . -maxdepth 1 -type d -name 'geph5-client-*' | head -n1)
           echo "SRC_DIR=$SRC_DIR" >> $GITHUB_ENV

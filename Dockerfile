@@ -9,17 +9,9 @@ COPY geph5-client /geph5-client
 
 RUN mkdir -p /config
 
-ARG USERNAME
-ARG PASSWORD
-ARG EXIT
-ARG PASSTHROUGH_CHINA=false
-ENV PASSTHROUGH_CHINA=${PASSTHROUGH_CHINA}
-
-COPY config.template /config.template
-
 ENV XDG_CONFIG_HOME=/config
 
-EXPOSE 9999
-EXPOSE 19999
+EXPOSE 9909
+EXPOSE 9910
 
-ENTRYPOINT ["sh", "-c", "envsubst < /config.template > /config/config.yml && /geph5-client -c /config/config.yml"]
+ENTRYPOINT ["sh", "-c", "/geph5-client -c /config.yml"]
