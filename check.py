@@ -9,7 +9,7 @@ REPO = "origin"
 
 def get_latest_version():
     url = f"https://crates.io/api/v1/crates/{CRATE}"
-    resp = requests.get(url)
+    resp = requests.get(url, headers={"User-Agent": "geph5-client-docker-ci"})
     resp.raise_for_status()
     return resp.json()["crate"]["newest_version"]
 
