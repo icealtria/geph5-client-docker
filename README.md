@@ -59,17 +59,8 @@ broker_keys:
 credentials:
   secret: "your-account-secret"
 
-# For legacy username and password
-# credentials:
-#   legacy_username_password:
-#     username: your_username
-#     password: your_password
-
 sess_metadata:
   filter:
     ads: true # Enable ad filtering.
     nsfw: false # Enable NSFW content filtering.
-
-vpn: false
-
 ```
